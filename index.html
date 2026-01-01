@@ -5,90 +5,98 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ضرب العشرة</title>
     <style>
-        /* تصميم شاشة الترحيب */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #1a1a1a;
+            overflow-x: hidden;
+        }
+
+        /* شاشة الترحيب - تظهر فوق كل شيء */
         #welcome-screen {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #ff0000; /* خلفية حمراء */
+            width: 100vw;
+            height: 100vh;
+            background-color: #ff0000;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            z-index: 1000;
+            z-index: 9999; /* للتأكد أنها في المقدمة */
             color: white;
             text-align: center;
         }
 
         #welcome-screen h1 {
-            font-size: 50px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin-bottom: 10px;
+            font-size: clamp(40px, 8vw, 80px);
+            margin: 0;
+            font-family: 'Arial Black', sans-serif;
         }
 
         #welcome-screen p {
-            font-size: 30px;
-            font-family: 'Amiri', serif; /* خط فخم */
+            font-size: clamp(20px, 4vw, 40px);
+            margin: 10px 0 20px 0;
+            font-family: 'Cairo', 'Amiri', serif;
             font-weight: bold;
-            margin-bottom: 20px;
         }
 
-        /* تصميم الموقع الرئيسي */
-        body {
-            background-color: #1a1a1a;
-            color: white;
-            font-family: Arial, sans-serif;
-            margin: 0;
-            display: none; /* مخفي في البداية */
+        #intro-video {
+            width: 320px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        .container {
-            max-width: 1000px;
-            margin: 20px auto;
+        /* محتوى الموقع - مخفي في البداية */
+        #main-content {
+            display: none;
+            padding: 20px;
             text-align: center;
         }
 
         .header-img {
             width: 100%;
-            max-height: 300px;
-            object-fit: cover;
-        }
-
-        .search-bar {
-            margin: 20px 0;
+            max-width: 1000px;
+            height: auto;
+            margin-bottom: 20px;
         }
 
         .search-bar input {
             width: 80%;
-            padding: 10px;
-            border: 2px solid #ff0000;
-            background: transparent;
-            color: white;
-            border-radius: 5px;
+            max-width: 600px;
+            padding: 15px;
+            border: 3px solid #ff0000;
+            background: #fff;
+            border-radius: 30px;
+            font-size: 18px;
+            margin-bottom: 40px;
+            outline: none;
         }
 
         .video-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            padding: 20px;
+            gap: 25px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         .video-item {
-            background: #333;
+            background: #252525;
             padding: 10px;
-            border-radius: 8px;
+            border-radius: 10px;
+            border-bottom: 4px solid #ff0000;
         }
 
         video {
             width: 100%;
             border-radius: 5px;
-            cursor: pointer;
         }
 
-        h3 { font-size: 16px; margin-top: 10px; }
+        h3 { color: #eee; font-size: 18px; }
     </style>
 </head>
 <body>
@@ -96,16 +104,16 @@
     <div id="welcome-screen">
         <h1>WELCOME</h1>
         <p>أهلاً بكم في ضرب العشرة</p>
-        <video id="intro-video" width="300" autoplay muted>
+        <video id="intro-video" autoplay muted playsinline>
             <source src="raks.mp4" type="video/mp4">
         </video>
     </div>
 
-    <div class="container">
+    <div id="main-content">
         <img src="sorrra.jpg" alt="Header" class="header-img">
         
         <div class="search-bar">
-            <input type="text" placeholder="ابحث هنا...">
+            <input type="text" placeholder="ابحث عن فيديوهاتك المفضلة...">
         </div>
 
         <div class="video-grid" id="videoContainer">
@@ -113,39 +121,40 @@
     </div>
 
     <script>
-        // إخفاء شاشة الترحيب بعد 3 ثوانٍ
-        setTimeout(() => {
-            document.getElementById('welcome-screen').style.display = 'none';
-            document.body.style.display = 'block';
-        }, 3000);
+        // كود التحكم في الشاشة الترحيبية
+        window.onload = function() {
+            setTimeout(() => {
+                const welcome = document.getElementById('welcome-screen');
+                const main = document.getElementById('main-content');
+                
+                welcome.style.display = 'none';
+                main.style.display = 'block';
+            }, 3000); // 3 ثواني بالضبط
+        };
 
-        // إنشاء الـ 10 فيديوهات تلقائياً
-        const videoContainer = document.getElementById('videoContainer');
-        const arabicNumbers = ["الأول", "الثاني", "الثالث", "الرابع", "الخامس", "السادس", "السابع", "الثامن", "التاسع", "العاشر"];
+        // توليد الفيديوهات الـ 10 مع ميزة النقر المزدوج
+        const container = document.getElementById('videoContainer');
+        const titles = ["الأول", "الثاني", "الثالث", "الرابع", "الخامس", "السادس", "السابع", "الثامن", "التاسع", "العاشر"];
 
         for (let i = 1; i <= 10; i++) {
-            const videoDiv = document.createElement('div');
-            videoDiv.className = 'video-item';
-            videoDiv.innerHTML = `
-                <video id="video${i}" controls>
+            const div = document.createElement('div');
+            div.className = 'video-item';
+            div.innerHTML = `
+                <video id="v${i}" controls>
                     <source src="video${i}.mp4" type="video/mp4">
                 </video>
-                <h3>عنوان الفيديو ${arabicNumbers[i-1]}</h3>
+                <h3>عنوان الفيديو ${titles[i-1]}</h3>
             `;
-            videoContainer.appendChild(videoDiv);
+            container.appendChild(div);
 
-            // إضافة ميزة الضغط مرتين (Double Tap) للتقديم والتأخير
-            const v = videoDiv.querySelector('video');
+            const v = div.querySelector('video');
             v.addEventListener('dblclick', function(e) {
                 const rect = v.getBoundingClientRect();
-                const x = e.clientX - rect.left; // مكان الضغطة بالنسبة للفيديو
-                
+                const x = e.clientX - rect.left;
                 if (x > rect.width / 2) {
-                    // ضغط جهة اليمين (تقديم)
-                    v.currentTime += 10;
+                    v.currentTime += 10; // تقديم
                 } else {
-                    // ضغط جهة اليسار (تأخير)
-                    v.currentTime -= 10;
+                    v.currentTime -= 10; // تأخير
                 }
             });
         }
